@@ -1,30 +1,52 @@
 import React from 'react'
-import {getHogs} from '../redux/actions'
 import {connect} from 'react-redux'
 import HogTile from './HogTile'
+import Banner from './Banner'
+import NavBar from './NavBar'
+import SearchBar from './SearchBar'
+import SortBar from './SortBar'
+import FilterBar from './FilterBar'
 
-class HogsContainer extends React.Component {
-
-  componentDidMount() {
-    this.props.getHogs()
-  }
-
-  render() {
-    let hogTiles = this.props.hogs.map(hog => <HogTile key={hog.name} hog={hog}/>)
-    return (
-      <div className="ui grid container">
+const HogsContainer = props => {
+  let hogTiles = props.hogs.map(hog => <HogTile key={hog.name} hog={hog}/>)
+  return (
+    <div className="hogslist">
+      <Banner />
+      <NavBar />
+      <SearchBar />
+      <SortBar />
+      <FilterBar />
+      <div className="ui grid container" id="hogslist">
         {hogTiles}
       </div>
-    )
+    </div>
+  )
+}
+
+const filterHogs = (hogs, searchText) => {
+   return hogs.filter(hog => hog.name.toLowerCase().includes(searchText.toLowerCase()))
+}
+
+const sortHogs = (hogs, sortValue) => {
+  if (sortValue === "unsort") {
+    return hogs
+  } else if (sortValue === 'name') {
+    return hogs.sort((a, b) => a.name.localeCompare(b.name))
+  } else {
+    return hogs.sort((a, b) => b['weight as a ratio of hog to LG - 24.7 Cu. Ft. French Door Refrigerator with Thru-the-Door Ice and Water'] - a['weight as a ratio of hog to LG - 24.7 Cu. Ft. French Door Refrigerator with Thru-the-Door Ice and Water'])
   }
 }
 
-const mapStateToProps = state => ({hogs: state.hogs})
-
-const mapDispatchToProps = dispatch => {
-  return {
-    getHogs: () => dispatch(getHogs())
+const filterHogsByGreased = (hogs, filterValue) => {
+  if (filterValue === "all") {
+    return hogs
+  } else if (filterValue === 'greased') {
+    return hogs.filter(hog => hog.greased === true)
+  } else {
+    return hogs.filter(hog => hog.greased === false)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HogsContainer)
+const mapStateToProps = state => ({hogs: filterHogsByGreased(sortHogs(filterHogs(state.hogs, state.searchText), state.sortValue), state.filterValue)})
+
+export default connect(mapStateToProps)(HogsContainer)
