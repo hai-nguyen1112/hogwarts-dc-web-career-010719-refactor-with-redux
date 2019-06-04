@@ -6,21 +6,28 @@ import NavBar from './NavBar'
 import SearchBar from './SearchBar'
 import SortBar from './SortBar'
 import FilterBar from './FilterBar'
+import {fetchHogsWithThunk} from '../redux/actions'
 
-const HogsContainer = props => {
-  let hogTiles = props.hogs.map(hog => <HogTile key={hog.name} hog={hog}/>)
-  return (
-    <div className="hogslist">
-      <Banner />
-      <NavBar />
-      <SearchBar />
-      <SortBar />
-      <FilterBar />
-      <div className="ui grid container" id="hogslist">
-        {hogTiles}
+class HogsContainer extends React.Component {
+  componentDidMount() {
+    this.props.fetchHogs()
+  }
+
+  render() {
+    let hogTiles = this.props.hogs.map(hog => <HogTile key={hog.name} hog={hog}/>)
+    return (
+      <div className="hogslist">
+        <Banner />
+        <NavBar />
+        <SearchBar />
+        <SortBar />
+        <FilterBar />
+        <div className="ui grid container" id="hogslist">
+          {hogTiles}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 const filterHogs = (hogs, searchText) => {
@@ -49,4 +56,10 @@ const filterHogsByGreased = (hogs, filterValue) => {
 
 const mapStateToProps = state => ({hogs: filterHogsByGreased(sortHogs(filterHogs(state.hogs, state.searchText), state.sortValue), state.filterValue)})
 
-export default connect(mapStateToProps)(HogsContainer)
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchHogs: () => dispatch(fetchHogsWithThunk())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HogsContainer)

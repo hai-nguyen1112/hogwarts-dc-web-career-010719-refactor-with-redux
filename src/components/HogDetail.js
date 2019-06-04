@@ -16,7 +16,7 @@ const HogDetail = props => {
           <div className="image">
               <img
                 alt=""
-                src={require(`../hog-imgs/${props.hog.name.split(" ").map(word => word.toLowerCase()).join('_')}.jpg`)}
+                src={props.hogGifs[props.hog.name]}
               />
           </div>
           <div className="content">
@@ -43,7 +43,8 @@ const HogDetail = props => {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    hog: state.hogs.find(hog => hog.name === ownProps.match.params.id)
+    hog: state.hogs.find(hog => hog.name === ownProps.match.params.id),
+    hogGifs: state.hogGifs
   }
 }
 

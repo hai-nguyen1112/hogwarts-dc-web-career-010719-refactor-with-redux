@@ -49,7 +49,7 @@ class HogForm extends Component {
             <div className="image">
               <img
                 alt=""
-                src={require(`../hog-imgs/${this.state.name.split(' ').map(word => word.toLowerCase()).join("_")}.jpg`)}
+                src={this.props.hogGifs[this.state.name]}
               />
             </div>
             <div className="content">
@@ -109,7 +109,8 @@ class HogForm extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    hog: state.hogs.find(hog => hog.name === ownProps.match.params.id)
+    hog: state.hogs.find(hog => hog.name === ownProps.match.params.id),
+    hogGifs: state.hogGifs
   }
 }
 

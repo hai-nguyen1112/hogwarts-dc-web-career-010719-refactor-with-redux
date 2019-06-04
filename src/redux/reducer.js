@@ -52,11 +52,21 @@ const filterValueReducer = (oldState="all", action) => {
   }
 }
 
+const hogGifsReducer = (oldState={}, action) => {
+  switch (action.type) {
+    case "FETCHED_HOG_GIFS":
+      return action.payload
+    default:
+      return oldState
+  }
+}
+
 const rootReducer = combineReducers({
   hogs: hogsReducer,
   searchText: searchTextReducer,
   sortValue: sortValueReducer,
-  filterValue: filterValueReducer
+  filterValue: filterValueReducer,
+  hogGifs: hogGifsReducer
 })
 
 export default rootReducer
